@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medium Article Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: #2a2a2a;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #3a3a3a;
+        }
+
+        .card-label {
+            font-size: 0.85rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .card-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px 15px;
+            background: #2a2a2a;
+            border: 1px solid #3a3a3a;
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-size: 1rem;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #00d4ff;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: #2a2a2a;
+            border: 1px solid #3a3a3a;
+            border-radius: 6px;
+            color: #e0e0e0;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #3a3a3a;
+            border-color: #00d4ff;
+        }
+
+        .btn.active {
+            background: #00d4ff;
+            color: #1a1a1a;
+            border-color: #00d4ff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #2a2a2a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: #333;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #fff;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+
+        th:hover {
+            background: #3a3a3a;
+        }
+
+        th.sortable::after {
+            content: ' ↕';
+            opacity: 0.3;
+            font-size: 0.8rem;
+        }
+
+        th.sorted-asc::after {
+            content: ' ↑';
+            opacity: 1;
+        }
+
+        th.sorted-desc::after {
+            content: ' ↓';
+            opacity: 1;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-top: 1px solid #3a3a3a;
+        }
+
+        tbody tr:hover {
+            background: #333;
+        }
+
+        .status-published {
+            color: #4ade80;
+        }
+
+        .status-pending {
+            color: #fbbf24;
+        }
+
+        a {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+
+        footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #3a3a3a;
+            text-align: center;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .card-value {
+                font-size: 1.5rem;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+
+        /* Hide columns on mobile */
+        @media (max-width: 600px) {
+            th:nth-child(5), td:nth-child(5),
+            th:nth-child(6), td:nth-child(6),
+            th:nth-child(7), td:nth-child(7) {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 Medium Article Dashboard</h1>
+            <p class="subtitle">Cross-project tracking of published and pending articles | Updated: {{GENERATED_DATE}}</p>
+        </header>
+
+        <div class="summary-cards">
+            <div class="card">
+                <div class="card-label">Total Articles</div>
+                <div class="card-value">{{TOTAL_COUNT}}</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Published</div>
+                <div class="card-value" style="color: #4ade80;">{{PUBLISHED_COUNT}}</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Pending</div>
+                <div class="card-value" style="color: #fbbf24;">{{PENDING_COUNT}}</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Avg GEO Score</div>
+                <div class="card-value">{{AVG_GEO}}</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <input
+                type="text"
+                id="searchBox"
+                class="search-box"
+                placeholder="Search by title or project..."
+            >
+            <div class="filter-buttons">
+                <button class="btn active" data-filter="all">All</button>
+                <button class="btn" data-filter="published">Published</button>
+                <button class="btn" data-filter="pending">Pending</button>
+            </div>
+        </div>
+
+        <table id="articleTable">
+            <thead>
+                <tr>
+                    <th class="sortable" data-sort="status">Status</th>
+                    <th class="sortable" data-sort="project">Project</th>
+                    <th class="sortable" data-sort="title">Title</th>
+                    <th class="sortable" data-sort="geo">GEO</th>
+                    <th class="sortable" data-sort="date">Date</th>
+                    <th>Medium</th>
+                    <th>GitHub</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                {{TABLE_ROWS}}
+            </tbody>
+        </table>
+
+        <div id="noResults" class="no-results" style="display: none;">
+            No articles found matching your search.
+        </div>
+
+        <footer>
+            Generated by <code>medium_tracker.py</code> |
+            <a href="https://github.com/ghighcove" target="_blank">Glenn Highcove</a>
+        </footer>
+    </div>
+
+    <script>
+        // Table sorting
+        let sortColumn = null;
+        let sortDirection = 'asc';
+
+        document.querySelectorAll('th.sortable').forEach(th => {
+            th.addEventListener('click', () => {
+                const column = th.dataset.sort;
+
+                // Toggle direction if same column
+                if (sortColumn === column) {
+                    sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+                } else {
+                    sortColumn = column;
+                    sortDirection = 'asc';
+                }
+
+                // Update UI
+                document.querySelectorAll('th.sortable').forEach(t => {
+                    t.classList.remove('sorted-asc', 'sorted-desc');
+                });
+                th.classList.add(`sorted-${sortDirection}`);
+
+                // Sort table
+                sortTable(column, sortDirection);
+            });
+        });
+
+        function sortTable(column, direction) {
+            const tbody = document.getElementById('tableBody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            rows.sort((a, b) => {
+                let aVal = a.querySelector(`td[data-${column}]`)?.dataset[column] || '';
+                let bVal = b.querySelector(`td[data-${column}]`)?.dataset[column] || '';
+
+                // Handle numeric columns
+                if (column === 'geo') {
+                    aVal = parseInt(aVal) || 0;
+                    bVal = parseInt(bVal) || 0;
+                }
+
+                if (aVal < bVal) return direction === 'asc' ? -1 : 1;
+                if (aVal > bVal) return direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+
+        // Filtering
+        let currentFilter = 'all';
+
+        document.querySelectorAll('.filter-buttons .btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update active button
+                document.querySelectorAll('.filter-buttons .btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Apply filter
+                currentFilter = btn.dataset.filter;
+                applyFilters();
+            });
+        });
+
+        // Search
+        const searchBox = document.getElementById('searchBox');
+        let searchTerm = '';
+
+        searchBox.addEventListener('input', (e) => {
+            searchTerm = e.target.value.toLowerCase();
+            applyFilters();
+        });
+
+        function applyFilters() {
+            const rows = document.querySelectorAll('#tableBody tr');
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const status = row.dataset.status;
+                const title = row.dataset.title.toLowerCase();
+                const project = row.dataset.project.toLowerCase();
+
+                // Check status filter
+                const statusMatch = currentFilter === 'all' || status === currentFilter;
+
+                // Check search term
+                const searchMatch = !searchTerm ||
+                    title.includes(searchTerm) ||
+                    project.includes(searchTerm);
+
+                if (statusMatch && searchMatch) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Show/hide no results message
+            const noResults = document.getElementById('noResults');
+            const table = document.getElementById('articleTable');
+            if (visibleCount === 0) {
+                noResults.style.display = 'block';
+                table.style.display = 'none';
+            } else {
+                noResults.style.display = 'none';
+                table.style.display = 'table';
+            }
+        }
+
+        // Initialize - apply any default filters
+        applyFilters();
+    </script>
+</body>
+</html>
