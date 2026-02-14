@@ -29,7 +29,10 @@ try:
     RICH_AVAILABLE = True
 except ImportError:
     RICH_AVAILABLE = False
-    print("⚠️  Install 'rich' for better CLI formatting: pip install rich")
+    try:
+        print("⚠️  Install 'rich' for better CLI formatting: pip install rich")
+    except UnicodeEncodeError:
+        print("[WARNING] Install 'rich' for better CLI formatting: pip install rich")
 
 
 @dataclass
@@ -80,7 +83,10 @@ def scan_published_articles() -> List[Article]:
                 metadata_path=str(metadata_file)
             ))
         except (json.JSONDecodeError, KeyError) as e:
-            print(f"⚠️  Skipping invalid metadata: {metadata_file} ({e})", file=sys.stderr)
+            try:
+                print(f"⚠️  Skipping invalid metadata: {metadata_file} ({e})", file=sys.stderr)
+            except UnicodeEncodeError:
+                print(f"[WARNING] Skipping invalid metadata: {metadata_file} ({e})", file=sys.stderr)
 
     return articles
 
@@ -138,7 +144,10 @@ def scan_pending_articles() -> List[Article]:
                 metadata_path=str(info_file)
             ))
         except Exception as e:
-            print(f"⚠️  Skipping invalid info file: {info_file} ({e})", file=sys.stderr)
+            try:
+                print(f"⚠️  Skipping invalid info file: {info_file} ({e})", file=sys.stderr)
+            except UnicodeEncodeError:
+                print(f"[WARNING] Skipping invalid info file: {info_file} ({e})", file=sys.stderr)
 
     return articles
 
@@ -224,7 +233,10 @@ def export_json(articles: List[Article], output_path: Optional[str] = None):
     if output_path:
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2)
-        print(f"✅ JSON exported to: {output_path}")
+        try:
+            print(f"✅ JSON exported to: {output_path}")
+        except UnicodeEncodeError:
+            print(f"[OK] JSON exported to: {output_path}")
     else:
         print(json.dumps(data, indent=2))
 
@@ -234,7 +246,10 @@ def generate_html_dashboard(articles: List[Article], output_path: Optional[str] 
     template_path = Path(__file__).parent.parent / 'templates' / 'dashboard_template.html'
 
     if not template_path.exists():
-        print(f"❌ Template not found: {template_path}")
+        try:
+            print(f"❌ Template not found: {template_path}")
+        except UnicodeEncodeError:
+            print(f"[ERROR] Template not found: {template_path}")
         print("   Run this script with --html after creating templates/dashboard_template.html")
         return
 
@@ -277,7 +292,10 @@ def generate_html_dashboard(articles: List[Article], output_path: Optional[str] 
         output_path = Path(__file__).parent.parent / 'published' / 'index.html'
 
     Path(output_path).write_text(html, encoding='utf-8')
-    print(f"✅ HTML dashboard generated: {output_path}")
+    try:
+        print(f"✅ HTML dashboard generated: {output_path}")
+    except UnicodeEncodeError:
+        print(f"[OK] HTML dashboard generated: {output_path}")
 
 
 def main():
