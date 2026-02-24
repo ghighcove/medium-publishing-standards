@@ -30,7 +30,7 @@ Archive it for the portfolio:
 
 ```bash
 python tools/archive_article.py \\
-  --source="G:/ai/your-project/article/medium_draft.md" \\
+  --source="<your-project>/article/medium_draft.md" \\
   --medium-url="https://medium.com/@user/article-slug-123" \\
   --project="your_project" \\
   --title="Article Title" \\

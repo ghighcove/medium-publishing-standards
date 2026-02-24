@@ -4,7 +4,7 @@ Archive a published Medium article with PDF snapshot, source copy, and metadata.
 
 Usage:
     python archive_article.py \\
-        --source="G:/ai/project/article/medium_draft.md" \\
+        --source="<project>/article/medium_draft.md" \\
         --medium-url="https://medium.com/@user/article-slug-123" \\
         --project="project_name" \\
         --title="Article Title" \\
