@@ -3,8 +3,8 @@
 Medium Article Tracker - Cross-project visibility into published and pending articles.
 
 Scans:
-- Published: G:/ai/medium-publishing-standards/published/source/*/metadata.json
-- Pending: G:/ai/**/MEDIUM_PUBLISH_INFO_*.md
+- Published: <this-repo>/published/source/*/metadata.json
+- Pending: <projects-root>/**/MEDIUM_PUBLISH_INFO_*.md
 
 Usage:
     python medium_tracker.py --list                    # All articles
@@ -91,10 +91,14 @@ def scan_published_articles() -> List[Article]:
     return articles
 
 
-def scan_pending_articles() -> List[Article]:
-    """Scan G:/ai/**/MEDIUM_PUBLISH_INFO_*.md for pending articles."""
+def scan_pending_articles(projects_root: Optional[str] = None) -> List[Article]:
+    """Scan for MEDIUM_PUBLISH_INFO_*.md pending articles across projects.
+
+    Args:
+        projects_root: Root directory to scan. Defaults to parent of this repo.
+    """
     articles = []
-    base_dir = Path('G:/ai')
+    base_dir = Path(projects_root) if projects_root else Path(__file__).parent.parent.parent
 
     if not base_dir.exists():
         return articles

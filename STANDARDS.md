@@ -11,7 +11,7 @@ This document is the **single source of truth** for all Medium article publishin
 
 Before any Medium publishing work, complete these 4 steps:
 
-1. ✅ **Read this document** (G:\ai\medium-publishing-standards\STANDARDS.md)
+1. ✅ **Read this document** (`medium-publishing-standards/STANDARDS.md` in your project root)
 2. ✅ **Check project lessons**: Read your project's `tasks/lessons.md` for publishing-related entries
 3. ✅ **Verify requirements**: Tables are PNG images (not HTML), images use GitHub Pages URLs, filenames are unique/timestamped
 4. ✅ **Use reference implementation**: Copy `templates/export_for_medium.py` if starting fresh
@@ -177,7 +177,7 @@ This should:
 - Save to `article/{unique_filename}.html`
 - Output GitHub Pages URL for Medium import
 
-**Reference implementation**: `G:\ai\medium-publishing-standards\templates\export_for_medium.py`
+**Reference implementation**: `templates/export_for_medium.py` (in this repo)
 
 ### 3. Commit and Push to GitHub
 
@@ -224,7 +224,7 @@ curl -I https://<username>.github.io/<repo>/article/{unique_filename}.html
 After article is live on Medium:
 
 ```bash
-python G:/ai/medium-publishing-standards/tools/archive_article.py \
+python medium-publishing-standards/tools/archive_article.py \
   --source="<project>/article/medium_draft.md" \
   --medium-url="https://medium.com/@username/article-slug-12345" \
   --project="<project_name>" \
