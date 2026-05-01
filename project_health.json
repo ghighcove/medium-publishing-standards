@@ -8,8 +8,10 @@
   "auto_value_score": 0.0,
   "spawn_depth": 1,
   "spawned_for": "TBD \u2014 set via --spawned-for flag",
-  "status": "kill_candidate",
+  "status": "archived",
   "recent_outputs": [],
   "blockers": [],
-  "next_run": null
+  "next_run": null,
+  "status_reason": "articles not current focus; 66d stale",
+  "status_updated": "2026-04-30"
 }
